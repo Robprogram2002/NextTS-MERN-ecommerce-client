@@ -68,9 +68,9 @@ export const logoutRequest = createAsyncThunk('user/logout', async () => {
 
     if (response.status !== 200) throw new Error('something went wrong');
 
-    return { 
-      message: response.data
-    }
+    return {
+      message: response.data,
+    };
   } catch (error) {
     throw new Error(error.message);
   }
