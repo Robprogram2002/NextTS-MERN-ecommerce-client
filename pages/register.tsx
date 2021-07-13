@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from 'react';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { auth } from '../firebase';
 
@@ -9,11 +9,16 @@ import { registerUser } from '../store/user/user_actions';
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
 
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const userState = useAppSelector((state) => state.userState);
+
+  useEffect(() => {
+    if (userState && userState.authenticated) router.push('/');
+  }, [userState]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -29,24 +34,32 @@ const Register = () => {
       dispatch(
         registerUser({
           email: user.email!,
-          username: user.displayName!,
-          imageUrl: user.photoURL,
+          username,
         })
       );
 
+      user.updateProfile({
+        displayName: username,
+      });
+
       await user.sendEmailVerification();
-      console.log('email verification send');
+      toast.success('an email verication was send to your email address');
+
+      router.push('/login');
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
-  useEffect(() => {
-    if (userState && userState.authToken) router.push('/');
-  }, [userState]);
-
   const registerForm = () => (
     <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        className="form-control"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Your username"
+      />
       <input
         type="email"
         className="form-control"

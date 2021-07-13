@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loginUser } from './user_actions';
+import { loginRequest, meRequest, logoutRequest } from './user_actions';
 
 // Define a type for the slice state
 interface useState {
@@ -7,7 +7,6 @@ interface useState {
   email: string | null;
   userId: string | null;
   imageUrl: string | null;
-  authToken: string | null;
   authenticated: boolean;
   value: number;
 }
@@ -18,7 +17,6 @@ const initialState: useState = {
   email: null,
   userId: null,
   imageUrl: null,
-  authToken: null,
   authenticated: false,
   value: 0,
 };
@@ -33,8 +31,28 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loginUser.fulfilled, (state, { payload }) => {
-      state.username = payload.user.username;
+    builder.addCase(loginRequest.fulfilled, (state, { payload }) => {
+      const { user } = payload;
+      state.username = user.username;
+      state.email = user.email;
+      state.imageUrl = user.photoUrl;
+      state.userId = user._id;
+      state.authenticated = true;
+    });
+    builder.addCase(meRequest.fulfilled, (state, { payload }) => {
+      const { user } = payload;
+      state.username = user.username;
+      state.email = user.email;
+      state.imageUrl = user.photoUrl;
+      state.userId = user._id;
+      state.authenticated = true;
+    });
+    builder.addCase(logoutRequest.fulfilled, (state) => {
+      state.username = initialState.username;
+      state.email = initialState.email;
+      state.imageUrl = initialState.imageUrl;
+      state.userId = initialState.userId;
+      state.authenticated = false;
     });
   },
 });

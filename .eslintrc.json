@@ -25,6 +25,7 @@
     }
   },
   "rules": {
+    "no-underscore-dangle": "off",
     "no-console": 1,
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",

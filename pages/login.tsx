@@ -6,19 +6,26 @@ import { useRouter } from 'next/router';
 import Link from 'next/Link';
 import { googleProvider, auth } from '../firebase';
 import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
-import { loginUser } from '../store/user/user_actions';
+import { loginRequest } from '../store/user/user_actions';
 
 const Login: FC = () => {
-  const [email, setEmail] = useState('gqlreactnode@gmail.com');
-  const [password, setPassword] = useState('gggggg');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const userState = useAppSelector((state) => state.userState);
+  const { redirectTo } = useAppSelector((state) => state.appState);
   const router = useRouter();
 
   useEffect(() => {
-    if (userState && userState.authToken) router.push('/');
+    if (userState && userState.authenticated) router.push('/');
   }, [userState]);
+
+  useEffect(() => {
+    if (redirectTo && userState.authenticated) {
+      router.push(redirectTo);
+    }
+  }, [redirectTo]);
 
   const dispatch = useAppDispatch();
 
@@ -28,7 +35,6 @@ const Login: FC = () => {
     // console.table(email, password);
     try {
       const result = await auth.signInWithEmailAndPassword(email, password);
-      // console.log(result);
       const { user } = result;
 
       if (!user) {
@@ -36,17 +42,22 @@ const Login: FC = () => {
       }
 
       if (!user.emailVerified) {
-        console.log('the email has not been verified yet');
+        return toast.error('the email has not been verified yet');
       }
 
-      const idTokenResult = await user.getIdTokenResult();
+      const authResult = await user.getIdTokenResult();
 
-      dispatch(loginUser(idTokenResult));
-
-      router.push('/');
-    } catch (error) {
-      toast.error(error.message);
       setLoading(false);
+      return dispatch(loginRequest({ authResult, redirectTo: '/' }));
+    } catch (error) {
+      setLoading(false);
+      if (error.code === 'auth/user-not-found') {
+        return toast.error('There is no user with this identifiers.');
+      }
+      if (error.code === 'auth/wrong-password') {
+        return toast.error('The password is invalid');
+      }
+      return toast.error(error.message);
     }
   };
 
@@ -59,12 +70,9 @@ const Login: FC = () => {
         if (!user) {
           throw new Error('something went wrong with firebase');
         }
-        console.log(user);
-        const idTokenResult = await user.getIdTokenResult();
+        const authResult = await user.getIdTokenResult();
 
-        dispatch(loginUser(idTokenResult));
-
-        router.push('/');
+        dispatch(loginRequest({ authResult, redirectTo: '/' }));
       })
       .catch((err) => {
         toast.error(err.message);
