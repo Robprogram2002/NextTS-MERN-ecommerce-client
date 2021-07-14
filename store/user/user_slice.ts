@@ -8,6 +8,7 @@ interface useState {
   userId: string | null;
   imageUrl: string | null;
   authenticated: boolean;
+  role: string | null;
   value: number;
 }
 
@@ -18,6 +19,7 @@ const initialState: useState = {
   userId: null,
   imageUrl: null,
   authenticated: false,
+  role: null,
   value: 0,
 };
 
@@ -38,6 +40,7 @@ const userSlice = createSlice({
       state.imageUrl = user.photoUrl;
       state.userId = user._id;
       state.authenticated = true;
+      state.role = user.role;
     });
     builder.addCase(meRequest.fulfilled, (state, { payload }) => {
       const { user } = payload;
@@ -46,6 +49,7 @@ const userSlice = createSlice({
       state.imageUrl = user.photoUrl;
       state.userId = user._id;
       state.authenticated = true;
+      state.role = user.role;
     });
     builder.addCase(logoutRequest.fulfilled, (state) => {
       state.username = initialState.username;
@@ -53,6 +57,7 @@ const userSlice = createSlice({
       state.imageUrl = initialState.imageUrl;
       state.userId = initialState.userId;
       state.authenticated = false;
+      state.role = initialState.role;
     });
   },
 });

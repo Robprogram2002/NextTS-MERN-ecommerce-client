@@ -1,10 +1,10 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 
-import { useAppSelector, useAppDispatch } from '../hooks/redux_hooks';
-import { registerUser } from '../store/user/user_actions';
+import { useAppSelector, useAppDispatch } from '../../hooks/redux_hooks';
+import { registerUser } from '../../store/user/user_actions';
 
 const Register = () => {
   const [email, setEmail] = useState('');

@@ -4,25 +4,28 @@ import { Button } from 'antd';
 import { MailOutlined, GoogleOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import Link from 'next/Link';
-import { googleProvider, auth } from '../firebase';
-import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
-import { loginRequest } from '../store/user/user_actions';
+import { googleProvider, auth } from '../../firebase';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
+import { loginRequest } from '../../store/user/user_actions';
 
 const Login: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const userState = useAppSelector((state) => state.userState);
+  const { authenticated, role } = useAppSelector((state) => state.userState);
   const { redirectTo } = useAppSelector((state) => state.appState);
   const router = useRouter();
 
   useEffect(() => {
-    if (userState && userState.authenticated) router.push('/');
-  }, [userState]);
+    if (authenticated) router.push('/');
+  }, [authenticated]);
 
   useEffect(() => {
-    if (redirectTo && userState.authenticated) {
+    if (role === 'admin' && authenticated) {
+      router.push('/admin/dashboard');
+    }
+    if (redirectTo && authenticated) {
       router.push(redirectTo);
     }
   }, [redirectTo]);
@@ -140,7 +143,7 @@ const Login: FC = () => {
             Login with Google
           </Button>
 
-          <Link href="/forgot/password">
+          <Link href="/auth/reset-password">
             <span className="float-right text-danger">Forgot Password</span>
           </Link>
         </div>
