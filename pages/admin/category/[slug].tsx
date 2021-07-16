@@ -10,7 +10,7 @@ import { useAppSelector, useAppDispatch } from '../../../hooks/redux_hooks';
 const CategoryUpdate = () => {
   const router = useRouter();
   const { categories } = useAppSelector((state) => state.categoryState);
-  const { redirectTo, loading } = useAppSelector((state) => state.appState);
+  const { redirectTo } = useAppSelector((state) => state.appState);
 
   useEffect(() => {
     if (redirectTo) {
@@ -37,7 +37,7 @@ const CategoryUpdate = () => {
           <AdminNav />
         </div>
         <div className="col">
-          {loading || !currentCategory ? (
+          {!currentCategory ? (
             <h4 className="text-danger">Loading..</h4>
           ) : (
             <h4>Update category</h4>

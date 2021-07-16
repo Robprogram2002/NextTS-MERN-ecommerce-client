@@ -5,6 +5,10 @@ import {
   getCategory,
   removeCategory,
   updateCategory,
+  createSub,
+  removeSub,
+  updateSub,
+  getSub,
 } from '../category/category_actions';
 
 interface AppSliceState {
@@ -39,6 +43,8 @@ const appSlice = createSlice({
     builder.addCase(meRequest.rejected, (state) => {
       state.initialLoading = false;
     });
+
+    // categories reducers
     builder.addCase(createCategory.pending, (state) => {
       state.loading = true;
       state.successMessage = null;
@@ -70,6 +76,47 @@ const appSlice = createSlice({
     });
     builder.addCase(removeCategory.fulfilled, (state) => {
       state.successMessage = 'category removed';
+    });
+
+    // sub categories reducers
+    builder.addCase(createSub.pending, (state) => {
+      state.loading = true;
+      state.successMessage = null;
+      state.errorMessage = null;
+      state.warnningMessage = null;
+    });
+    builder.addCase(getSub.pending, (state) => {
+      state.loading = true;
+      state.successMessage = null;
+      state.errorMessage = null;
+      state.warnningMessage = null;
+      state.redirectTo = null;
+    });
+    builder.addCase(createSub.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.successMessage = `sub category ${payload.newSub.name} created`;
+    });
+    builder.addCase(getSub.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(updateSub.pending, (state) => {
+      state.loading = true;
+      state.successMessage = null;
+      state.errorMessage = null;
+      state.warnningMessage = null;
+    });
+    builder.addCase(updateSub.fulfilled, (state) => {
+      state.successMessage = "the sub category's name has been updated";
+      state.redirectTo = '/admin/sub-categories';
+      state.loading = false;
+    });
+    builder.addCase(updateSub.rejected, (state) => {
+      state.errorMessage = 'Opps , something went wrong';
+      state.loading = false;
+    });
+
+    builder.addCase(removeSub.fulfilled, (state) => {
+      state.successMessage = 'sub category removed';
     });
   },
 });

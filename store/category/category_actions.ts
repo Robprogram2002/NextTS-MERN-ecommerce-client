@@ -83,3 +83,105 @@ export const createCategory = createAsyncThunk(
     }
   }
 );
+
+// Sub categories actions
+
+export const getSubCategories = createAsyncThunk(
+  'sub-category/list',
+  async () => {
+    try {
+      const response = await axios.get(`/subs/list`);
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        subCategories: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+export const getSub = createAsyncThunk(
+  'sub-categories/get-one',
+  async (slug: string | string[]) => {
+    try {
+      const response = await axios.get(`/subs/${slug}`);
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        subCategory: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+export const removeSub = createAsyncThunk(
+  'sub-categories/remove',
+  async (slug: string | string[]) => {
+    try {
+      const response = await axios.delete(`/subs/remove/${slug}`);
+
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        message: response.data.message,
+        slug,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+interface UpdateSubPayload {
+  slug: string | string[];
+  sub: string;
+  parent: string;
+}
+
+export const updateSub = createAsyncThunk(
+  'sub-categories/update-sub',
+  async ({ slug, sub, parent }: UpdateSubPayload) => {
+    try {
+      const response = await axios.put(`/subs/update/${slug}`, {
+        name: sub,
+        parent,
+      });
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        updatedSub: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+interface CreateSubPayload {
+  sub: string;
+  category: string;
+}
+
+export const createSub = createAsyncThunk(
+  'sub-categories/create',
+  async ({ sub, category }: CreateSubPayload) => {
+    try {
+      const response = await axios.post(`/subs/create`, {
+        name: sub,
+        parent: category,
+      });
+
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        newSub: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);

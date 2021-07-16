@@ -1,21 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Category } from '../../types/Category';
+import { Category, SubCategory } from '../../types/Category';
 import {
   getCategories,
   createCategory,
   removeCategory,
-  // getCategory,
   updateCategory,
+  getSubCategories,
+  createSub,
+  getSub,
+  removeSub,
+  updateSub,
 } from './category_actions';
 
 interface CategoryState {
   categories: Category[];
   currentCategory: Category | null;
+  subCategories: SubCategory[];
+  currentSubCategory: SubCategory | null;
 }
 
 const initialState: CategoryState = {
   categories: [],
   currentCategory: null,
+  subCategories: [],
+  currentSubCategory: null,
 };
 
 const categorySlice = createSlice({
@@ -52,6 +60,34 @@ const categorySlice = createSlice({
       }
 
       state.categories[categoryIndex] = payload.category;
+    });
+
+    // sub categories reducers
+    builder.addCase(getSubCategories.fulfilled, (state, { payload }) => {
+      console.log(payload);
+      state.subCategories = payload.subCategories;
+    });
+    builder.addCase(createSub.fulfilled, (state, { payload }) => {
+      state.subCategories.splice(0, 0, payload.newSub);
+    });
+    builder.addCase(removeSub.fulfilled, (state, { payload }) => {
+      state.subCategories = state.subCategories.filter(
+        (sub) => sub.slug !== payload.slug
+      );
+    });
+    builder.addCase(updateSub.fulfilled, (state, { payload }) => {
+      const subCategoryIndex: number = state.subCategories.findIndex(
+        (sub) => sub._id.toString() === payload.updatedSub._id.toString()
+      );
+
+      if (subCategoryIndex === -1) {
+        return;
+      }
+
+      state.subCategories[subCategoryIndex] = payload.updatedSub;
+    });
+    builder.addCase(getSub.fulfilled, (state, { payload }) => {
+      state.currentSubCategory = payload.subCategory;
     });
   },
 });
