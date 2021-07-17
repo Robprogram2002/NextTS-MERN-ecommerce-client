@@ -10,6 +10,7 @@ import {
   getSub,
   removeSub,
   updateSub,
+  getSubsByCategory,
 } from './category_actions';
 
 interface CategoryState {
@@ -88,6 +89,10 @@ const categorySlice = createSlice({
     });
     builder.addCase(getSub.fulfilled, (state, { payload }) => {
       state.currentSubCategory = payload.subCategory;
+    });
+    builder.addCase(getSubsByCategory.fulfilled, (state, { payload }) => {
+      console.log(payload.subs);
+      state.subCategories = payload.subs;
     });
   },
 });

@@ -185,3 +185,20 @@ export const createSub = createAsyncThunk(
     }
   }
 );
+
+export const getSubsByCategory = createAsyncThunk(
+  'category/subcategories',
+  async (_id: string) => {
+    try {
+      const response = await axios.get(`/categories/${_id}/subs`);
+
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        subs: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);

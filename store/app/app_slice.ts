@@ -10,6 +10,13 @@ import {
   updateSub,
   getSub,
 } from '../category/category_actions';
+import { uploadImage } from '../images_actions';
+import {
+  createProduct,
+  removeProduct,
+  updateProduct,
+  getProductsByCount,
+} from '../product/product_actions';
 
 interface AppSliceState {
   redirectTo: string | null;
@@ -117,6 +124,66 @@ const appSlice = createSlice({
 
     builder.addCase(removeSub.fulfilled, (state) => {
       state.successMessage = 'sub category removed';
+    });
+    builder.addCase(uploadImage.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(uploadImage.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(uploadImage.rejected, (state) => {
+      state.loading = false;
+      state.errorMessage = 'Something went wrong , image has not been uploaded';
+    });
+    // products extra reducers
+    builder.addCase(createProduct.pending, (state) => {
+      state.loading = true;
+      state.successMessage = null;
+      state.errorMessage = null;
+    });
+    builder.addCase(createProduct.fulfilled, (state) => {
+      state.successMessage = 'Product created successfully!';
+      state.loading = false;
+    });
+    builder.addCase(createProduct.rejected, (state) => {
+      state.errorMessage = 'Something went wrong!';
+      state.loading = false;
+    });
+    builder.addCase(updateProduct.pending, (state) => {
+      state.loading = true;
+      state.successMessage = null;
+      state.errorMessage = null;
+    });
+    builder.addCase(updateProduct.fulfilled, (state) => {
+      state.successMessage = 'Product updated successfully!';
+      state.loading = false;
+      state.redirectTo = '/admin/products';
+    });
+    builder.addCase(updateProduct.rejected, (state) => {
+      state.errorMessage =
+        'Something went wrong, the product has not been updated';
+      state.loading = false;
+    });
+    builder.addCase(removeProduct.pending, (state) => {
+      state.loading = true;
+      state.successMessage = null;
+      state.errorMessage = null;
+    });
+    builder.addCase(removeProduct.fulfilled, (state) => {
+      state.successMessage = 'Product removed  successfully!';
+      state.loading = false;
+    });
+    builder.addCase(removeProduct.rejected, (state) => {
+      state.errorMessage =
+        'Something went wrong, the product has not been removed!';
+      state.loading = false;
+    });
+    builder.addCase(getProductsByCount.pending, (state) => {
+      state.loading = true;
+      state.redirectTo = null;
+    });
+    builder.addCase(getProductsByCount.fulfilled, (state) => {
+      state.loading = false;
     });
   },
 });
