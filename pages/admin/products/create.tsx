@@ -2,10 +2,9 @@ import { useState, FormEvent } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux_hooks';
 import AdminNav from '../../../components/Layout/Nav/AdminNav';
 import { createProduct } from '../../../store/product/product_actions';
-import ProductCreateForm, {
-  ProductValues,
-} from '../../../components/Forms/CreateProductForm';
+import ProductCreateForm from '../../../components/Forms/CreateProductForm';
 import FileUpload from '../../../components/Forms/FileUpload';
+import { ProductValues } from '../../../types/Product';
 
 const initialState = {
   title: '',

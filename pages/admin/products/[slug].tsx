@@ -9,7 +9,7 @@ import FileUpload from '../../../components/Forms/FileUpload';
 import ProductUpdateForm from '../../../components/Forms/UpdateProductForm';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux_hooks';
 import { productActions } from '../../../store/product/product_slice';
-import { ProductValues } from '../../../components/Forms/CreateProductForm';
+import { ProductValues } from '../../../types/Product';
 
 const initialState = {
   title: '',
