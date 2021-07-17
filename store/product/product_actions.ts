@@ -62,7 +62,6 @@ export const getProduct = createAsyncThunk(
   'products/get-one',
   async (slug: string | string[]) => {
     try {
-      console.log('hereeeee', slug);
       const response = await axios.get(`/products/${slug}`);
 
       if (response.status !== 200) throw new Error('something went wrong');
@@ -95,6 +94,37 @@ export const updateProduct = createAsyncThunk(
 
       return {
         product: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+interface GetSelectedProductsPayload {
+  order: string;
+  sort: string;
+  page: number;
+}
+
+export const getSelectedProducts = createAsyncThunk(
+  'products/get-sellected',
+  async ({ order, sort, page }: GetSelectedProductsPayload) => {
+    try {
+      console.log(order, sort, page);
+      const response = await axios.get(`/products/selected`, {
+        params: {
+          order,
+          sort,
+          page,
+        },
+      });
+
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        products: response.data,
+        sort,
       };
     } catch (error) {
       throw new Error(error.message);

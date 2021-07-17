@@ -28,7 +28,7 @@ export type Product = {
   subs: string[] | SubCategory[];
   quantity: string;
   sold: number;
-  images: [{ url: any }];
+  images: [{ url: any; public_id: string }];
   shipping: 'Yes' | 'No';
   color: any;
   brand: any;

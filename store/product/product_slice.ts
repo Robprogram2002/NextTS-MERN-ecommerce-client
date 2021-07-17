@@ -6,18 +6,23 @@ import {
   createProduct,
   getProduct,
   updateProduct,
+  getSelectedProducts,
 } from './product_actions';
 
 interface ProductSliceState {
   imagesUploaded: any[] | null;
   currentProduct: Product | null;
   products: Product[] | null;
+  bestSellerProducts: Product[] | null;
+  newestProducts: Product[] | null;
 }
 
 const initialState: ProductSliceState = {
   imagesUploaded: null,
   currentProduct: null,
   products: null,
+  bestSellerProducts: null,
+  newestProducts: null,
 };
 
 const productSlice = createSlice({
@@ -62,6 +67,14 @@ const productSlice = createSlice({
         );
 
         state.products[index] = payload.product;
+      }
+    });
+    builder.addCase(getSelectedProducts.fulfilled, (state, { payload }) => {
+      console.log('called');
+      if (payload.sort === 'sold') {
+        state.bestSellerProducts = payload.products;
+      } else {
+        state.newestProducts = payload.products;
       }
     });
   },
