@@ -22,6 +22,7 @@ const Login: FC = () => {
   }, [authenticated]);
 
   useEffect(() => {
+    console.log(router.query);
     if (role === 'admin' && authenticated) {
       router.push('/admin/dashboard');
     }

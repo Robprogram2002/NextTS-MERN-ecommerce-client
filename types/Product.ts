@@ -35,6 +35,7 @@ export type Product = {
   createdAt: Date;
   updatedAt: Date;
   _id: string;
+  ratings: any[];
 };
 
 export type ProductValues = {

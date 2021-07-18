@@ -131,3 +131,45 @@ export const getSelectedProducts = createAsyncThunk(
     }
   }
 );
+
+export const getRelatedProducts = createAsyncThunk(
+  'products/relates',
+  async (productId: string) => {
+    try {
+      const response = await axios.get(`/products/${productId}/relates`);
+
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        products: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+interface RateProductPayload {
+  star: number;
+  productId: string;
+}
+
+export const rateProductHandler = createAsyncThunk(
+  'products/rate',
+  async ({ star, productId }: RateProductPayload) => {
+    console.log(star, productId);
+    try {
+      const response = await axios.patch(`/products/rate/${productId}`, {
+        star,
+      });
+
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        updatedProduct: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);

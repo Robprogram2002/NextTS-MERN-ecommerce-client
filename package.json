@@ -27,6 +27,7 @@
     "react-image-file-resizer": "^0.4.7",
     "react-redux": "^7.2.4",
     "react-responsive-carousel": "^3.2.19",
+    "react-star-ratings": "^2.3.0",
     "react-toastify": "^7.0.4",
     "typewriter-effect": "^2.18.0",
     "yup": "^0.32.9"

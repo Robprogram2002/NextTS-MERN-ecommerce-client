@@ -7,6 +7,7 @@ import {
   getProduct,
   updateProduct,
   getSelectedProducts,
+  getRelatedProducts,
 } from './product_actions';
 
 interface ProductSliceState {
@@ -15,6 +16,7 @@ interface ProductSliceState {
   products: Product[] | null;
   bestSellerProducts: Product[] | null;
   newestProducts: Product[] | null;
+  relatedProducts: Product[] | null;
 }
 
 const initialState: ProductSliceState = {
@@ -23,6 +25,7 @@ const initialState: ProductSliceState = {
   products: null,
   bestSellerProducts: null,
   newestProducts: null,
+  relatedProducts: null,
 };
 
 const productSlice = createSlice({
@@ -70,12 +73,14 @@ const productSlice = createSlice({
       }
     });
     builder.addCase(getSelectedProducts.fulfilled, (state, { payload }) => {
-      console.log('called');
       if (payload.sort === 'sold') {
         state.bestSellerProducts = payload.products;
       } else {
         state.newestProducts = payload.products;
       }
+    });
+    builder.addCase(getRelatedProducts.fulfilled, (state, { payload }) => {
+      state.relatedProducts = payload.products;
     });
   },
 });
