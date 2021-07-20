@@ -9,6 +9,10 @@ import {
   getSelectedProducts,
   getRelatedProducts,
 } from './product_actions';
+import {
+  getProductsByCategory,
+  getProductsBySub,
+} from '../category/category_actions';
 
 interface ProductSliceState {
   imagesUploaded: any[] | null;
@@ -81,6 +85,12 @@ const productSlice = createSlice({
     });
     builder.addCase(getRelatedProducts.fulfilled, (state, { payload }) => {
       state.relatedProducts = payload.products;
+    });
+    builder.addCase(getProductsByCategory.fulfilled, (state, { payload }) => {
+      state.products = payload.products;
+    });
+    builder.addCase(getProductsBySub.fulfilled, (state, { payload }) => {
+      state.products = payload.products;
     });
   },
 });

@@ -11,6 +11,8 @@ import {
   removeSub,
   updateSub,
   getSubsByCategory,
+  getCategory as getOneCategory,
+  getProductsBySub,
 } from './category_actions';
 
 interface CategoryState {
@@ -93,6 +95,12 @@ const categorySlice = createSlice({
     builder.addCase(getSubsByCategory.fulfilled, (state, { payload }) => {
       console.log(payload.subs);
       state.subCategories = payload.subs;
+    });
+    builder.addCase(getOneCategory.fulfilled, (state, { payload }) => {
+      state.currentCategory = payload.category;
+    });
+    builder.addCase(getProductsBySub.fulfilled, (state, { payload }) => {
+      state.currentSubCategory = payload.sub;
     });
   },
 });

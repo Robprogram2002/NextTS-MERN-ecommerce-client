@@ -1,6 +1,8 @@
 import Jumbotron from '../components/cards/Jumbotron';
 import NewArrivals from '../components/Home/NewArrivals';
 import BestSellers from '../components/Home/BestSellers';
+import CategoryList from '../components/Home/CategoryList';
+import SubList from '../components/Home/SubList';
 
 export default function Home() {
   return (
@@ -17,6 +19,16 @@ export default function Home() {
         Best Sellers
       </h4>
       <BestSellers />
+
+      <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">
+        Categories
+      </h4>
+      <CategoryList />
+
+      <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">
+        Sub Categories
+      </h4>
+      <SubList />
 
       <br />
       <br />

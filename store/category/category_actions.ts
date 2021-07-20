@@ -29,6 +29,7 @@ export const getCategory = createAsyncThunk(
     }
   }
 );
+
 export const removeCategory = createAsyncThunk(
   'categories/delete-one',
   async (slug: string) => {
@@ -196,6 +197,41 @@ export const getSubsByCategory = createAsyncThunk(
 
       return {
         subs: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+export const getProductsByCategory = createAsyncThunk(
+  'category/products',
+  async (slug: string | string[]) => {
+    try {
+      const response = await axios.get(`/categories/${slug}/products`);
+
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        products: response.data,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+export const getProductsBySub = createAsyncThunk(
+  'sub-categories/products',
+  async (slug: string | string[]) => {
+    try {
+      const response = await axios.get(`/subs/${slug}/products`);
+
+      if (response.status !== 200) throw new Error('something went wrong');
+
+      return {
+        products: response.data.products,
+        sub: response.data.sub,
       };
     } catch (error) {
       throw new Error(error.message);

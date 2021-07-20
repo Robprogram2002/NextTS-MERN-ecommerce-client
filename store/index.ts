@@ -3,6 +3,7 @@ import userSlice from './user/user_slice';
 import appSlice from './app/app_slice';
 import categorySlice from './category/category_slice';
 import productSlice from './product/product_slice';
+import filterSlice from './filter/filter_slice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     appState: appSlice.reducer,
     categoryState: categorySlice.reducer,
     productState: productSlice.reducer,
+    filterSlice: filterSlice.reducer,
   },
 });
 
