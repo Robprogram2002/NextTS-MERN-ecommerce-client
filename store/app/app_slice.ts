@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginRequest, meRequest } from '../user/user_actions';
+import { loginRequest, meRequest, getCompleteCart } from '../user/user_actions';
 import {
   createCategory,
   getCategory,
@@ -183,6 +183,12 @@ const appSlice = createSlice({
       state.redirectTo = null;
     });
     builder.addCase(getProductsByCount.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(getCompleteCart.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getCompleteCart.fulfilled, (state) => {
       state.loading = false;
     });
   },

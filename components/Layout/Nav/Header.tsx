@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu } from 'antd';
+import { Badge, Menu } from 'antd';
 import {
   AppstoreOutlined,
   SettingOutlined,
@@ -7,6 +7,7 @@ import {
   UserAddOutlined,
   LogoutOutlined,
   ShoppingOutlined,
+  ShoppingCartOutlined,
 } from '@ant-design/icons';
 import Link from 'next/Link';
 import { useRouter } from 'next/router';
@@ -21,11 +22,27 @@ const Header = () => {
   const [current, setCurrent] = useState('home');
 
   const dispatch = useAppDispatch();
-  const { authenticated, email, role } = useAppSelector(
+  const { authenticated, email, role, cart } = useAppSelector(
     (state) => state.userState
   );
 
   const router = useRouter();
+
+  const getCartLength = () => {
+    if (authenticated) {
+      return cart.products.length;
+    }
+
+    // if (Window) {
+    //   const localCart = localStorage.getItem('cart');
+
+    //   if (localCart) {
+    //     return JSON.parse(localCart).products.length;
+    //   }
+    // }
+
+    return null;
+  };
 
   const handleClick = () => {
     // e.preventDefault();
@@ -46,6 +63,14 @@ const Header = () => {
 
       <Item key="shop" icon={<ShoppingOutlined />}>
         <Link href="/shop">Shop</Link>
+      </Item>
+
+      <Item key="cart" icon={<ShoppingCartOutlined />}>
+        <Link href="/user/cart">
+          <Badge count={getCartLength()} offset={[9, 0]}>
+            Cart
+          </Badge>
+        </Link>
       </Item>
 
       {!authenticated && (

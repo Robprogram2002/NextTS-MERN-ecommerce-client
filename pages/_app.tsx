@@ -10,7 +10,7 @@ import store from '../store/index';
 import InitialWrapper from '../components/InitialWrapper';
 import ToastWrapper from '../components/ToastWrapper';
 
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
 axios.defaults.withCredentials = true;
 
 function MyApp({ Component, pageProps }: AppProps) {

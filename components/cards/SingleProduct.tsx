@@ -1,4 +1,4 @@
-import { Card, Tabs } from 'antd';
+import { Card, Tabs, Tooltip } from 'antd';
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -12,13 +12,16 @@ import ShowRatings from '../Modals/ShowRatings';
 import RatingModal from '../Modals/Rating';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux_hooks';
 import { rateProductHandler } from '../../store/product/product_actions';
+import cartInLocal from '../../utils/cartInLocal';
+import { addProductToCart } from '../../store/user/user_actions';
 
 const { TabPane } = Tabs;
 
 const SingleProduct = ({ product }: { product: Product }) => {
   const [star, setStar] = useState<number>();
+  const [tooltip, setTooltip] = useState('Click to add');
   const { title, images, description, _id } = product;
-  const { userId } = useAppSelector((state) => state.userState);
+  const { userId, authenticated } = useAppSelector((state) => state.userState);
   const dispatch = useAppDispatch();
 
   const onStarClick = (newRating: number, name: string) => {
@@ -37,6 +40,19 @@ const SingleProduct = ({ product }: { product: Product }) => {
       } // current user's star
     }
   }, []);
+
+  const handleAddToCart = () => {
+    if (!authenticated) {
+      // store cart data in localstorage
+      cartInLocal(product);
+    } else {
+      // store cart data in DB
+      dispatch(addProductToCart(product));
+
+      // show tooltip
+      setTooltip('Added');
+    }
+  };
 
   return (
     <>
@@ -83,10 +99,21 @@ const SingleProduct = ({ product }: { product: Product }) => {
         )}
         <Card
           actions={[
-            <>
-              <ShoppingCartOutlined className="text-success" /> <br />
-              Add to Cart
-            </>,
+            <Tooltip title={tooltip}>
+              <button
+                onClick={handleAddToCart}
+                type="button"
+                style={{
+                  outline: 'none',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  cursor: 'pointer',
+                }}
+              >
+                <ShoppingCartOutlined className="text-danger" /> <br /> Add to
+                Cart
+              </button>
+            </Tooltip>,
             <Link href="/">
               <div>
                 <HeartOutlined className="text-info" /> <br /> Add to Wishlist

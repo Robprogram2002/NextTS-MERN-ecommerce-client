@@ -1,16 +1,37 @@
-import { Card } from 'antd';
+import { Card, Tooltip } from 'antd';
 import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Link from 'next/Link';
 // import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { Product } from '../../types/Product';
 import ShowRatings from '../Modals/ShowRatings';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
+import { addProductToCart } from '../../store/user/user_actions';
+import cartInLocal from '../../utils/cartInLocal';
 
 const { Meta } = Card;
 
 const ProductCard = ({ product }: { product: Product }) => {
   // destructure
-  const { images, title, description, slug } = product;
+  const { images, title, description, slug, price } = product;
+  const [tooltip, setTooltip] = useState('Click to add');
+  const { authenticated } = useAppSelector((state) => state.userState);
+
+  const dispatch = useAppDispatch();
+  const handleAddToCart = () => {
+    if (!authenticated) {
+      // store cart data in localstorage
+      cartInLocal(product);
+    } else {
+      // store cart data in DB
+      dispatch(addProductToCart(product));
+
+      // show tooltip
+      setTooltip('Added');
+    }
+  };
+
   return (
     <>
       {product && product.ratings && product.ratings.length > 0 ? (
@@ -38,13 +59,25 @@ const ProductCard = ({ product }: { product: Product }) => {
               <EyeOutlined className="text-warning" /> <br /> View Product{' '}
             </div>
           </Link>,
-          <>
-            <ShoppingCartOutlined className="text-danger" /> <br /> Add to Cart
-          </>,
+          <Tooltip title={tooltip}>
+            <button
+              onClick={handleAddToCart}
+              type="button"
+              style={{
+                outline: 'none',
+                border: 'none',
+                backgroundColor: 'transparent',
+                cursor: 'pointer',
+              }}
+            >
+              <ShoppingCartOutlined className="text-danger" /> <br /> Add to
+              Cart
+            </button>
+          </Tooltip>,
         ]}
       >
         <Meta
-          title={title}
+          title={`${title} - $${price}`}
           description={`${description && description.substring(0, 40)}...`}
         />
       </Card>
