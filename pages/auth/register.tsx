@@ -1,16 +1,27 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import { Field, Formik, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import { auth } from '../../firebase';
 
 import { useAppSelector, useAppDispatch } from '../../hooks/redux_hooks';
 import { registerUser } from '../../store/user/user_actions';
+import styles from '../../styles/login.module.scss';
+
+const signupValidationSchema = Yup.object().shape({
+  email: Yup.string().email('add a valid email address'),
+  password: Yup.string()
+    .trim()
+    .min(6, 'password must be at least 6 charcters long')
+    .max(50, 'password is too large'),
+  username: Yup.string()
+    .trim()
+    .min(3, 'username must be at least 3 characters long')
+    .max(50, 'username too long'),
+});
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -20,67 +31,103 @@ const Register = () => {
     if (userState && userState.authenticated) router.push('/');
   }, [userState]);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      const { user } = response;
-
-      if (!user) throw new Error('soemthing went wrong with firebase auth');
-
-      dispatch(
-        registerUser({
-          email: user.email!,
-          username,
-        })
-      );
-
-      user.updateProfile({
-        displayName: username,
-      });
-
-      await user.sendEmailVerification();
-      toast.success('an email verication was send to your email address');
-
-      router.push('/login');
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
   const registerForm = () => (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        className="form-control"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Your username"
-      />
-      <input
-        type="email"
-        className="form-control"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Your email"
-      />
-      <input
-        type="password"
-        className="form-control"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
+    <Formik
+      initialValues={{ email: '', password: '', username: '' }}
+      validationSchema={signupValidationSchema}
+      onSubmit={async (values, actions) => {
+        try {
+          const { email, password, username } = values;
+          const response = await auth.createUserWithEmailAndPassword(
+            email,
+            password
+          );
+          const { user } = response;
 
-      <br />
+          if (!user) throw new Error('soemthing went wrong with firebase auth');
 
-      <button type="submit" className="btn btn-raised">
-        Register
-      </button>
-    </form>
+          dispatch(
+            registerUser({
+              email: user.email!,
+              username,
+            })
+          );
+
+          user.updateProfile({
+            displayName: username,
+          });
+
+          await user.sendEmailVerification();
+          toast.success('an email verication was send to your email address');
+
+          router.push('/auth/login');
+          actions.resetForm();
+        } catch (error) {
+          actions.resetForm();
+          toast.error(error.message);
+        }
+      }}
+      validateOnBlur
+      validateOnChange
+    >
+      {({ isSubmitting, errors }) => (
+        <Form>
+          <div className="form-group">
+            <Field
+              type="text"
+              className="form-control"
+              name="username"
+              placeholder="Your username"
+            />
+            <ErrorMessage
+              name="username"
+              render={(error) => (
+                <span className={styles.ErrorText}> {error} </span>
+              )}
+            />
+          </div>
+
+          <div className="form-group">
+            <Field
+              type="email"
+              className="form-control"
+              name="email"
+              placeholder="Your email"
+            />
+            <ErrorMessage
+              name="email"
+              render={(error) => (
+                <span className={styles.ErrorText}> {error} </span>
+              )}
+            />
+          </div>
+
+          <div className="form-group">
+            <Field
+              type="password"
+              className="form-control"
+              name="password"
+              placeholder="Your password"
+            />
+            <ErrorMessage
+              name="password"
+              render={(error) => (
+                <span className={styles.ErrorText}> {error} </span>
+              )}
+            />
+          </div>
+
+          <br />
+          <button
+            type="submit"
+            className={`${styles.SubmitButton} ${styles.Email}`}
+            disabled={isSubmitting || Object.keys(errors).length > 0}
+          >
+            Register
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 
   return (

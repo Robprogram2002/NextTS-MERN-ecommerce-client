@@ -20,7 +20,8 @@ const Search = () => {
         onChange={(e) => setText(e.target.value)}
         type="search"
         value={text}
-        className="form-control mr-sm-2"
+        style={{ width: '300px' }}
+        className="form-control mr-sm-1"
         placeholder="Search"
       />
       <SearchOutlined onClick={handleSubmit} style={{ cursor: 'pointer' }} />

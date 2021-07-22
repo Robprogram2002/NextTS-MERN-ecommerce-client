@@ -1,0 +1,40 @@
+.ErrorText {
+    color: rgb(221, 13, 13);
+    font-size: 1.2em;
+    font-style: italic;
+    font-weight: normal;
+    padding-top: .6rem;
+}
+
+.SubmitButton {
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid lightgray;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    padding: 8px 16px;
+    outline:none;
+    background-color: whitesmoke;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+
+
+
+}
+
+.Email {
+    &:hover {
+        color: royalblue;
+        border: 1px solid royalblue;
+    }
+}
+
+.Google {
+    &:hover {
+        color: crimson;
+        border: 1px solid crimson;
+    }
+}

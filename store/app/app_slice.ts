@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { loginRequest, meRequest, getCompleteCart } from '../user/user_actions';
 import {
   createCategory,
@@ -25,6 +25,7 @@ interface AppSliceState {
   successMessage: string | null;
   errorMessage: string | null;
   warnningMessage: string | null;
+  afterLogin: string | null;
 }
 
 const initialState: AppSliceState = {
@@ -34,15 +35,26 @@ const initialState: AppSliceState = {
   successMessage: null,
   errorMessage: null,
   warnningMessage: null,
+  afterLogin: null,
 };
 
 const appSlice = createSlice({
   name: 'appSlice',
   initialState,
-  reducers: {},
+  reducers: {
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    clearRedirect: (state) => {
+      state.redirectTo = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(loginRequest.fulfilled, (state, { payload }) => {
       state.redirectTo = payload.redirectTo;
+    });
+    builder.addCase(loginRequest.rejected, (state) => {
+      state.loading = false;
     });
     builder.addCase(meRequest.fulfilled, (state) => {
       state.initialLoading = false;
