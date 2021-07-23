@@ -8,9 +8,9 @@ import {
   removeSub,
   createSub,
 } from '../../../store/category/category_actions';
-import AdminNav from '../../../components/Layout/Nav/AdminNav';
 import CategoryForm from '../../../components/Forms/CategoryForm';
 import LocalSearch from '../../../components/Forms/LocalSearch';
+import AdminLayout from '../../../components/Layout/AdminLayout';
 
 const SubCreate = () => {
   const [name, setName] = useState('');
@@ -45,71 +45,60 @@ const SubCreate = () => {
   };
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-md-2">
-          <AdminNav />
-        </div>
-        <div className="col">
-          {categories.length === 0 ? (
-            <h4 className="text-danger">Loading..</h4>
-          ) : (
-            <h4>Create sub category</h4>
-          )}
+    <AdminLayout>
+      {categories.length === 0 ? (
+        <h4 className="text-danger">Loading..</h4>
+      ) : (
+        <h4>Create sub category</h4>
+      )}
 
-          <div className="form-group">
-            <label>Parent category</label>
-            <select
-              name="category"
-              className="form-control"
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option>Please select</option>
-              {categories.length > 0 &&
-                categories.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-
-          <CategoryForm
-            handleSubmit={handleSubmit}
-            name={name}
-            setName={setName}
-          />
-
-          {/* step 2 and step 3 */}
-          <LocalSearch keyword={keyword} setKeyword={setKeyword} />
-
-          {/* step 5 */}
-          {subCategories.length === 0
-            ? 'Loading categories ...'
-            : subCategories
-                .filter((subCategory) =>
-                  subCategory.name.toLowerCase().includes(keyword)
-                )
-                .map((s) => (
-                  <div className="alert alert-secondary" key={s._id}>
-                    {s.name}
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(s.slug)}
-                      className="btn btn-sm float-right"
-                    >
-                      <DeleteOutlined className="text-danger" />
-                    </button>
-                    <Link href={`/admin/sub-categories/${s.slug}`}>
-                      <button type="button" className="btn btn-sm float-right">
-                        <EditOutlined className="text-warning" />
-                      </button>
-                    </Link>
-                  </div>
-                ))}
-        </div>
+      <div className="form-group">
+        <label>Parent category</label>
+        <select
+          name="category"
+          className="form-control"
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option>Please select</option>
+          {categories.length > 0 &&
+            categories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name}
+              </option>
+            ))}
+        </select>
       </div>
-    </div>
+
+      <CategoryForm handleSubmit={handleSubmit} name={name} setName={setName} />
+
+      {/* step 2 and step 3 */}
+      <LocalSearch keyword={keyword} setKeyword={setKeyword} />
+
+      {/* step 5 */}
+      {subCategories.length === 0
+        ? 'Loading categories ...'
+        : subCategories
+            .filter((subCategory) =>
+              subCategory.name.toLowerCase().includes(keyword)
+            )
+            .map((s) => (
+              <div className="alert alert-secondary" key={s._id}>
+                {s.name}
+                <button
+                  type="button"
+                  onClick={() => handleRemove(s.slug)}
+                  className="btn btn-sm float-right"
+                >
+                  <DeleteOutlined className="text-danger" />
+                </button>
+                <Link href={`/admin/sub-categories/${s.slug}`}>
+                  <button type="button" className="btn btn-sm float-right">
+                    <EditOutlined className="text-warning" />
+                  </button>
+                </Link>
+              </div>
+            ))}
+    </AdminLayout>
   );
 };
 

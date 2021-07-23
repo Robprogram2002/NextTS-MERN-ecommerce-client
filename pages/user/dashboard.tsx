@@ -68,7 +68,7 @@ const dashboard = () => {
   const showEachOrders = () =>
     orders.map((order) => (
       <div key={order._id} className="m-5 p-3 card">
-        <ShowPaymentInfo order={order} />
+        <ShowPaymentInfo order={order} showStatus />
         {showOrderInTable(order)}
         <div className="row">
           <div className="col">{showDownloadLink(order)}</div>

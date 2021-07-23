@@ -1,51 +1,71 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next';
+import axios from 'axios';
 import ProductCard from '../../components/cards/ProductCard';
-import {
-  getCategory,
-  getProductsByCategory,
-} from '../../store/category/category_actions';
-import { useAppSelector, useAppDispatch } from '../../hooks/redux_hooks';
+import { Product } from '../../types/Product';
+import { Category } from '../../types/Category';
 
-const CategoryHome = () => {
-  const { products } = useAppSelector((state) => state.productState);
-  const { currentCategory } = useAppSelector((state) => state.categoryState);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const { slug } = router.query;
+interface CategoryHomeProps {
+  products: Product[];
+  category: Category;
+}
 
-  useEffect(() => {
-    dispatch(getCategory(slug!));
-    dispatch(getProductsByCategory(slug!));
-  }, [slug]);
-
-  return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col">
-          {!products || !currentCategory ? (
-            <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">
-              Loading...
-            </h4>
-          ) : (
-            <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">
-              {`${products.length} Products in " ${currentCategory.name} " category`}
-            </h4>
-          )}
-        </div>
+const CategoryHome = ({ products, category }: CategoryHomeProps) => (
+  <div className="container-fluid">
+    <div className="row">
+      <div className="col">
+        {!products || !category ? (
+          <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">
+            Loading...
+          </h4>
+        ) : (
+          <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">
+            {`${products.length} Products in " ${category.name} " category`}
+          </h4>
+        )}
       </div>
-
-      {products && (
-        <div className="row">
-          {products.map((p) => (
-            <div className="col" key={p._id}>
-              <ProductCard product={p} />
-            </div>
-          ))}
-        </div>
-      )}
     </div>
-  );
-};
+
+    {products && (
+      <div className="row">
+        {products.map((p) => (
+          <div className="col" key={p._id}>
+            <ProductCard product={p} />
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
 
 export default CategoryHome;
+
+export async function getServerSideProps({
+  params,
+}: GetServerSidePropsContext) {
+  try {
+    console.log(params);
+    const slug = params?.slug;
+
+    const catRes = await axios.get(
+      `${process.env.NEXT_PUBLIC_API}/categories/${slug}`
+    );
+
+    const prodRes = await axios.get(
+      `${process.env.NEXT_PUBLIC_API}/categories/${slug}/products`
+    );
+
+    if (prodRes.status !== 200 || catRes.status !== 200)
+      throw new Error('something went wrong');
+
+    return {
+      props: {
+        products: prodRes.data,
+        category: catRes.data,
+      },
+    };
+  } catch (error) {
+    return {
+      props: { error: 'something went wrong' },
+    };
+  }
+}

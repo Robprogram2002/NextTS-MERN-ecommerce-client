@@ -1,4 +1,10 @@
-const ShowPaymentInfo = ({ order }: { order: any }) => (
+const ShowPaymentInfo = ({
+  order,
+  showStatus,
+}: {
+  order: any;
+  showStatus: boolean;
+}) => (
   // eslint-disable-next-line no-return-assign
   <div>
     <p>
@@ -24,9 +30,11 @@ const ShowPaymentInfo = ({ order }: { order: any }) => (
         {new Date(order.paymentIntent.created * 1000).toLocaleString()}
       </span>
       {' / '}
-      <span className="badge bg-primary text-white">
-        STATUS: {order.orderStatus}
-      </span>
+      {showStatus && (
+        <span className="badge bg-primary text-white">
+          STATUS: {order.orderStatus}
+        </span>
+      )}
     </p>
   </div>
 );

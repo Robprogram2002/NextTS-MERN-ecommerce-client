@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getUserOrders } from './order_actions';
+import { getUserOrders, getAllOrders, updateUserOrder } from './order_actions';
 
 interface OrderSliceState {
   orders: any[];
@@ -24,6 +24,16 @@ const orderSlice = createSlice({
     builder.addCase(getUserOrders.fulfilled, (state, { payload }) => {
       state.orders = payload.orders;
       state.loading = false;
+    });
+    builder.addCase(getAllOrders.fulfilled, (state, { payload }) => {
+      state.orders = payload.orders;
+    });
+    builder.addCase(updateUserOrder.fulfilled, (state, { payload }) => {
+      const index = state.orders.findIndex(
+        (order) => order._id.toString() === payload.orderId.toString()
+      );
+
+      state.orders[index].orderStatus = payload.status;
     });
   },
 });

@@ -1,31 +1,31 @@
-import { useEffect, useState } from 'react';
 import { Pagination } from 'antd';
+import { useState } from 'react';
 import ProductCard from '../cards/ProductCard';
 import LoadingCard from '../cards/LoadingCard';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
-import { getSelectedProducts } from '../../store/product/product_actions';
+import { Product } from '../../types/Product';
 
-const NewArrivals = () => {
+interface NewArrivalsProps {
+  newestsProducts: Product[];
+}
+
+const NewArrivals = ({ newestsProducts }: NewArrivalsProps) => {
   const [page, setPage] = useState(1);
-  const dispatch = useAppDispatch();
-  const { newestProducts } = useAppSelector((state) => state.productState);
-
-  useEffect(() => {
-    dispatch(getSelectedProducts({ sort: 'createdAt', order: 'desc', page }));
-  }, [page]);
+  const count = 4;
 
   return (
     <>
       <div className="container">
-        {!newestProducts ? (
-          <LoadingCard count={4} />
+        {!newestsProducts ? (
+          <LoadingCard count={count} />
         ) : (
           <div className="row">
-            {newestProducts.map((product) => (
-              <div key={product._id} className="col-md-3">
-                <ProductCard product={product} />
-              </div>
-            ))}
+            {newestsProducts
+              .slice((page - 1) * count, page * count)
+              .map((product) => (
+                <div key={product._id} className="col-md-3">
+                  <ProductCard product={product} />
+                </div>
+              ))}
           </div>
         )}
       </div>

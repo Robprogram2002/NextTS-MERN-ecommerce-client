@@ -1,16 +1,11 @@
-import { useEffect } from 'react';
 import Link from 'next/Link';
-import { getCategories } from '../../store/category/category_actions';
-import { useAppSelector, useAppDispatch } from '../../hooks/redux_hooks';
+import { Category } from '../../types/Category';
 
-const CategoryList = () => {
-  const { categories } = useAppSelector((state) => state.categoryState);
-  const dispatch = useAppDispatch();
+interface CategoryListProps {
+  categories: Category[];
+}
 
-  useEffect(() => {
-    dispatch(getCategories());
-  }, []);
-
+const CategoryList = ({ categories }: CategoryListProps) => {
   const showCategories = () =>
     categories.map((c) => (
       <div

@@ -1,18 +1,13 @@
-import { useEffect } from 'react';
 import Link from 'next/Link';
-import { getSubCategories } from '../../store/category/category_actions';
-import { useAppSelector, useAppDispatch } from '../../hooks/redux_hooks';
+import { SubCategory } from '../../types/Category';
 
-const SubList = () => {
-  const { subCategories } = useAppSelector((state) => state.categoryState);
-  const dispatch = useAppDispatch();
+interface SubListProps {
+  subcategories: SubCategory[];
+}
 
-  useEffect(() => {
-    dispatch(getSubCategories());
-  }, []);
-
+const SubList = ({ subcategories }: SubListProps) => {
   const showSubs = () =>
-    subCategories.map((s) => (
+    subcategories.map((s) => (
       <div
         key={s._id}
         className="col btn btn-outlined-primary btn-lg btn-block btn-raised m-3"
@@ -24,7 +19,7 @@ const SubList = () => {
   return (
     <div className="container">
       <div className="row">
-        {subCategories.length === 0 ? (
+        {subcategories.length === 0 ? (
           <h4 className="text-center">Loading...</h4>
         ) : (
           showSubs()
